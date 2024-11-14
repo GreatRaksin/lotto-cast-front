@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SlideViewer from './components/SlideViewer';
 import ResultsViewer from './components/ResultsViewer';
 import api from './services/api';
-import GameTimers from "./components/GameTimers";
+import UnifiedGameTimer from "./components/UnifiedGameTimer"; // Импортируем новый компонент
 
 function DataController() {
     const [slides, setSlides] = useState([]);
@@ -10,7 +10,6 @@ function DataController() {
     const [showResults, setShowResults] = useState(false);
     const [currentGame, setCurrentGame] = useState(null);
 
-    // Функция для получения слайдов и результатов
     useEffect(() => {
         async function fetchSlides() {
             try {
@@ -26,8 +25,6 @@ function DataController() {
             try {
                 const response = await api.get('/lottery-results/');
                 const sortedResults = response.data.sort((a, b) => new Date(b.result_date) - new Date(a.result_date));
-
-                // Получаем последние результаты для каждой игры
                 const latestResults = {
                     "Game 4": sortedResults.find(result => result.game_name === "Game 4"),
                     "Game 16": sortedResults.find(result => result.game_name === "Game 16"),
@@ -45,7 +42,6 @@ function DataController() {
         return () => clearInterval(resultsInterval);
     }, []);
 
-    // Обработка окончания таймера
     function handleTimerEnd(gameName) {
         setShowResults(true);
         setCurrentGame(gameName);
@@ -58,7 +54,7 @@ function DataController() {
             ) : (
                 <SlideViewer slides={slides} />
             )}
-            <GameTimers results={results} onTimerEnd={handleTimerEnd} />
+            <UnifiedGameTimer results={results} onTimerEnd={handleTimerEnd} />
         </div>
     );
 }

@@ -5,7 +5,9 @@ import './ResultsViewer.css?v=1';
 function ResultsViewer({results}) {
     console.log("Results loaded:", results);
     if (!results) {
-        return <div>Loading results...</div>;
+        return <div className="warning">
+            <h1>Внимание!<br />Наблюдаются проблемы с сетью. Сообщите об этом своему руководителю!</h1>
+        </div>
     }
 
     // Определяем тип игры на основе структуры результатов

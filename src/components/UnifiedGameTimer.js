@@ -1,7 +1,8 @@
+// UnifiedGameTimer.js
 import React, { useEffect, useState } from 'react';
 import './GameTimers.css';
 
-function GameTimers({ results, onTimerEnd }) {
+function UnifiedGameTimer({ results, onTimerEnd }) {
     const [timers, setTimers] = useState({
         "Game 4": { remainingTime: 0 },
         "Game 16": { remainingTime: 0 },
@@ -46,4 +47,4 @@ function GameTimers({ results, onTimerEnd }) {
     );
 }
 
-export default GameTimers;
+export default UnifiedGameTimer;
