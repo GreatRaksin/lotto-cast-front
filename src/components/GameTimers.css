@@ -1,0 +1,79 @@
+/* src/components/GameTimers.css */
+
+.game-timers {
+    display: flex;
+    justify-content: space-between;
+    background: rgb(0,95,255);
+    background: linear-gradient(356deg, rgba(0,95,255,1) 0%, rgba(9,9,121,1) 100%);
+    border-top: 2px solid #ddd;
+    padding: 10px;
+}
+
+.game-timer {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    justify-content: space-around;
+    position: relative;
+}
+
+.game-timer:first-child::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 10%;
+    height: 80%;
+    width: 2px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translateX(50%);
+}
+
+.game-logo {
+    max-width: 200px;
+    margin-bottom: 10px;
+}
+
+.timer-display {
+    font-size: 3rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* Медиазапросы для адаптивного отображения */
+
+@media (max-width: 768px) {
+    .game-timers {
+        flex-direction: row; /* Сохраняем оба таймера в одной строке */
+    }
+
+    .game-timer {
+        flex-direction: column; /* Размещаем логотип и таймер по вертикали внутри блока */
+        padding: 5px;
+        align-items: center;
+    }
+
+    .game-logo {
+        max-width: 150px;
+        margin-bottom: 5px;
+    }
+
+    .timer-display {
+        font-size: 2rem;
+    }
+
+    .game-timer:first-child::after {
+        display: none; /* Убираем разделительную линию на мобильных устройствах */
+    }
+}
+
+@media (max-width: 480px) {
+    .game-logo {
+        max-width: 100px;
+    }
+
+    .timer-display {
+        font-size: 1.5rem;
+    }
+}
