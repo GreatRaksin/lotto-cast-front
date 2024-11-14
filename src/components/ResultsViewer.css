@@ -6,6 +6,14 @@
     height: 80vh;
 }
 
+.warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: url("../../public/img/error.webp");
+    height: 100vh;
+}
+
 .serie {
     font-weight: bold;
     color: white;

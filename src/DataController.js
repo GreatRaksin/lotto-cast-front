@@ -1,8 +1,9 @@
+// DataController.js
 import React, { useState, useEffect } from 'react';
 import SlideViewer from './components/SlideViewer';
 import ResultsViewer from './components/ResultsViewer';
 import api from './services/api';
-import GameTimers from "./components/GameTimers";
+import UnifiedGameTimer from "./components/UnifiedGameTimer";
 
 function DataController() {
     const [slides, setSlides] = useState([]);
@@ -10,7 +11,6 @@ function DataController() {
     const [showResults, setShowResults] = useState(false);
     const [currentGame, setCurrentGame] = useState(null);
 
-    // Функция для получения слайдов и результатов
     useEffect(() => {
         async function fetchSlides() {
             try {
@@ -32,7 +32,7 @@ function DataController() {
                     "Game 4": sortedResults.find(result => result.game_name === "Game 4"),
                     "Game 16": sortedResults.find(result => result.game_name === "Game 16"),
                 };
-                console.log('Fetched!!! ', latestResults);
+
                 setResults(latestResults);
             } catch (error) {
                 console.error("Error fetching results:", error);
@@ -41,14 +41,28 @@ function DataController() {
 
         fetchSlides();
         fetchResults();
-        const resultsInterval = setInterval(fetchResults, 300000);
+        const resultsInterval = setInterval(fetchResults, 300000); // Обновление результатов каждые 5 минут
         return () => clearInterval(resultsInterval);
     }, []);
 
     // Обработка окончания таймера
     function handleTimerEnd(gameName) {
-        setShowResults(true);
-        setCurrentGame(gameName);
+        if (!showResults) {
+            setShowResults(true);
+            setCurrentGame(gameName);
+            // Скрываем результаты через 10 секунд
+            setTimeout(() => {
+                setShowResults(false);
+                // Сбрасываем таймеры, чтобы начать новый отсчет
+                resetTimers();
+            }, 10000);
+        }
+    }
+
+    // Функция для сброса таймеров
+    function resetTimers() {
+        // Здесь можно добавить логику для сброса таймеров, если это необходимо
+        // Например, можно установить состояние таймеров в начальное значение
     }
 
     return (
@@ -58,7 +72,7 @@ function DataController() {
             ) : (
                 <SlideViewer slides={slides} />
             )}
-            <GameTimers results={results} onTimerEnd={handleTimerEnd} />
+            <UnifiedGameTimer results={results} onTimerEnd={handleTimerEnd} />
         </div>
     );
 }

@@ -5,7 +5,9 @@ import './ResultsViewer.css?v=1';
 function ResultsViewer({results}) {
     console.log("Results loaded:", results);
     if (!results) {
-        return <div>Loading results...</div>;
+        return <div className="warning">
+            <h1>Внимание!<br />Наблюдаются проблемы с сетью. Сообщите об этом своему руководителю!</h1>
+        </div>
     }
 
     // Определяем тип игры на основе структуры результатов
@@ -15,7 +17,7 @@ function ResultsViewer({results}) {
         <div className="results-viewer">
             <img src={`/img/${gameType.toLowerCase().replace(" ", "_")}.svg`} alt={`${gameType} Logo`}
                  className="game-logo-main"/>
-            <h1 className='serie'>Тиражная серия № {results.id}</h1>
+            <h1 className='serie'>Тиражная серия № {results.draw_id}</h1>
             <div className="balls-container">
                 {gameType === "Game 4" ? (
                     // Отображаем двумерный массив для Game 4
