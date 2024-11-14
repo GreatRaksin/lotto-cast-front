@@ -4,33 +4,35 @@ import './GameTimers.css';
 
 function UnifiedGameTimer({ results, onTimerEnd }) {
     const [timers, setTimers] = useState({
-        "Game 4": { remainingTime: 0 },
-        "Game 16": { remainingTime: 0 },
+        "Game 4": { remainingTime: 300 }, // Начальное значение 5 минут
+        "Game 16": { remainingTime: 300 },
     });
 
     useEffect(() => {
         const updateTimers = () => {
             const newTimers = { ...timers };
+            let timerEnded = false;
+
             Object.entries(results).forEach(([gameName, result]) => {
                 if (result) {
-                    const resultTime = new Date(result.result_date);
-                    const currentTime = new Date();
-                    const secondsSinceResult = Math.floor((currentTime - resultTime) / 1000);
-                    const remainingTime = Math.max(300 - secondsSinceResult, 0); // 300 секунд = 5 минут
-                    newTimers[gameName].remainingTime = remainingTime;
+                    const remainingTime = newTimers[gameName].remainingTime;
+                    if (remainingTime > 0) {
+                        newTimers[gameName].remainingTime -= 1; // Уменьшаем оставшееся время на 1 секунду
+                    }
 
-                    if (remainingTime <= 0) {
+                    if (remainingTime <= 1 && !timerEnded) {
+                        timerEnded = true; // Убедимся, что только один таймер сработал
                         onTimerEnd(gameName);
                     }
                 }
             });
+
             setTimers(newTimers);
         };
 
-        updateTimers();
-        const interval = setInterval(updateTimers, 1000);
-        return () => clearInterval(interval);
-    }, [results, onTimerEnd]);
+        const interval = setInterval(updateTimers, 1000); // Обновляем каждую секунду
+        return () => clearInterval(interval); // Очищаем интервал при размонтировании
+    }, [results, onTimerEnd, timers]); // Зависимости
 
     return (
         <div className="game-timers">
