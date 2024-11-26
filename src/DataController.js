@@ -10,6 +10,7 @@ function DataController() {
     const [results, setResults] = useState({});
     const [showResults, setShowResults] = useState(false);
     const [currentGame, setCurrentGame] = useState(null);
+    const [loadingResults, setLoadingResults] = useState(false);
 
     useEffect(() => {
         async function fetchSlides() {
@@ -23,6 +24,7 @@ function DataController() {
         }
 
         async function fetchResults() {
+            setLoadingResults(true); // Начинаем загрузку результатов
             try {
                 const response = await api.get('/lottery-results/');
                 const sortedResults = response.data.sort((a, b) => new Date(b.result_date) - new Date(a.result_date));
@@ -34,35 +36,24 @@ function DataController() {
                 };
 
                 setResults(latestResults);
+                setShowResults(true); // Показываем результаты
             } catch (error) {
                 console.error("Error fetching results:", error);
+            } finally {
+                setLoadingResults(false); // Завершаем загрузку результатов
             }
         }
 
         fetchSlides();
-        fetchResults();
-        const resultsInterval = setInterval(fetchResults, 300000); // Обновление результатов каждые 5 минут
+        const resultsInterval = setInterval(fetchResults, 300000); // Запрос результатов каждые 5 минут
         return () => clearInterval(resultsInterval);
     }, []);
 
     // Обработка окончания таймера
     function handleTimerEnd(gameName) {
-        if (!showResults) {
-            setShowResults(true);
-            setCurrentGame(gameName);
-            // Скрываем результаты через 10 секунд
-            setTimeout(() => {
-                setShowResults(false);
-                // Сбрасываем таймеры, чтобы начать новый отсчет
-                resetTimers();
-            }, 10000);
-        }
-    }
-
-    // Функция для сброса таймеров
-    function resetTimers() {
-        // Здесь можно добавить логику для сброса таймеров, если это необходимо
-        // Например, можно установить состояние таймеров в начальное значение
+        setCurrentGame(gameName);
+        // Запрос результатов сразу после окончания таймера
+        fetchResults();
     }
 
     return (
@@ -73,6 +64,7 @@ function DataController() {
                 <SlideViewer slides={slides} />
             )}
             <UnifiedGameTimer results={results} onTimerEnd={handleTimerEnd} />
+            {loadingResults && <div>Получение результатов...</div>}
         </div>
     );
 }
